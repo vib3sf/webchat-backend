@@ -16,7 +16,7 @@ export class UsersService {
     },
   ];
 
-  private user_count = 2;
+  private user_count = this.users.length;
 
   async findOne(username: string): Promise<User | undefined> {
     return this.users.find(user => user.name === username);

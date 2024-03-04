@@ -28,18 +28,14 @@ export class AuthService {
     username: string, 
     password: string,
     password_confirm: string
-  ): Promise<{ token: string }> {
+  ): Promise<void> {
     if(await this.usersService.findOne(username))
       throw new ConflictException('Username already exist');
 
     if(password !== password_confirm)
-      throw new ConflictException('Password did not match');
+      throw new ConflictException('Passwords did not match');
 
-    const user = await this.usersService.putOne(username, password);
-
-    return { 
-      token: await this.getToken(user)
-    };
+    await this.usersService.putOne(username, password);
   }
 
   private async getToken(user: User) : Promise<any> {
