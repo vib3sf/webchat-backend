@@ -8,8 +8,17 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.user.username, signInDto.user.password);
+  login(@Body() loginDto: Record<string, any>) {
+    return this.authService.login(loginDto.user.username, loginDto.user.password);
+  }
+
+  @Post('register')
+  register(@Body() registerDto: Record<string, any>) {
+    return this.authService.register(
+      registerDto.user.username, 
+      registerDto.user.password, 
+      registerDto.user.confirmation_password, 
+    );
   }
 
   @UseGuards(AuthGuard)
