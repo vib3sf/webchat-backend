@@ -1,38 +1,29 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import {User} from './entity/users.entity';
+import { Injectable } from '@nestjs/common';
+import { User } from './entity/users.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      id: 1,
-      name: 'john',
-      password: 'changeme',
-    },
-    {
-      id: 2,
-      name: 'maria',
-      password: 'guess',
-    },
-  ];
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>
+  ) {}
 
-  private user_count = this.users.length;
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find(user => user.name === username);
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const user = new this.userModel(createUserDto);
+    return user.save();
   }
 
-  async putOne(
-    username:         string,
-    password:         string,
-  ): Promise<User> {
-    const user = {
-      id: ++this.user_count, 
-      name: username, 
-      password: password
-    }
 
-    this.users.push(user)
-    return user;
+  async findOne(username: string): Promise<User> {
+    return this.userModel.findOne({ 
+      username: username }).exec();
+  }
+
+
+  async findAll(): Promise<User[]> {
+    return this.userModel.find().exec();
   }
 }
