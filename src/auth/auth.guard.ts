@@ -6,13 +6,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import {ConfigService} from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private configService: ConfigService, 
-    private jwtService: JwtService
+    private configService: ConfigService,
+    private jwtService: JwtService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -22,12 +22,9 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      const payload = await this.jwtService.verifyAsync(
-        token,
-        {
-          secret: this.configService.get('jwt_key')
-        }
-      );
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get('jwt_key'),
+      });
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
