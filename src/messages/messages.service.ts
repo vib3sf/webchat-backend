@@ -20,4 +20,11 @@ export class MessagesService {
     console.log(deleteMessageDto);
     await this.messageModel.deleteOne({ id: id });
   }
+
+  async edit(editMessageDto: CreateMessageDto, id: string) {
+    await this.messageModel.updateOne(
+      { id: id },
+      { content: editMessageDto.content },
+    );
+  }
 }

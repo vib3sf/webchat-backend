@@ -1,10 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { DeleteMessageDto } from './dto/delete-message.dto';
 import { MessagesService } from './messages.service';
@@ -26,5 +20,13 @@ export class MessagesController {
   ): Promise<void> {
     console.log(id);
     await this.messagesService.delete(deleteMessageDto, id);
+  }
+
+  @Patch(':id')
+  async edit(
+    @Body() editMessageDto: CreateMessageDto,
+    @Param('id') id: string,
+  ): Promise<void> {
+    await this.messagesService.edit(editMessageDto, id);
   }
 }
