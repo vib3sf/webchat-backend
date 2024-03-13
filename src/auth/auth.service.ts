@@ -22,7 +22,7 @@ export class AuthService {
     if (user?.password !== loginDto.password) throw new UnauthorizedException();
 
     return {
-      user: { name: user.username, user_id: user.id },
+      user: { name: user.username, id: user.id },
       token: await this.getToken(user),
     };
   }
