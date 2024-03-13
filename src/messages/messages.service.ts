@@ -13,7 +13,7 @@ export class MessagesService {
 
   async create(createMessageDto: CreateMessageDto): Promise<Message> {
     console.log(createMessageDto);
-    return new this.messageModel(createMessageDto).save();
+    return await new this.messageModel(createMessageDto).save();
   }
 
   async delete(deleteMessageDto: DeleteMessageDto, id: string) {

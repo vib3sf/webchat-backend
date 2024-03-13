@@ -16,7 +16,7 @@ export class MessagesController {
 
   @Post()
   async create(@Body() createMessageDto: CreateMessageDto): Promise<Message> {
-    return this.messagesService.create(createMessageDto);
+    return await this.messagesService.create(createMessageDto);
   }
 
   @Delete(':id')
@@ -25,6 +25,6 @@ export class MessagesController {
     @Param('id') id: string,
   ): Promise<void> {
     console.log(id);
-    this.messagesService.delete(deleteMessageDto, id);
+    await this.messagesService.delete(deleteMessageDto, id);
   }
 }
