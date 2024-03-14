@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { Message } from './entity/messages.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { DeleteMessageDto } from './dto/delete-message.dto';
 
 @Injectable()
 export class MessagesService {
@@ -11,20 +15,35 @@ export class MessagesService {
     @InjectModel(Message.name) private messageModel: Model<Message>,
   ) {}
 
-  async create(createMessageDto: CreateMessageDto): Promise<Message> {
+  async create(
+    createMessageDto: CreateMessageDto,
+    user_id: string,
+  ): Promise<Message> {
+    createMessageDto.user_id = user_id;
     console.log(createMessageDto);
     return await new this.messageModel(createMessageDto).save();
   }
 
-  async delete(deleteMessageDto: DeleteMessageDto, id: string) {
-    console.log(deleteMessageDto);
+  async delete(id: string, user_id: string) {
+    await this.checkMessage(id, user_id);
     await this.messageModel.deleteOne({ id: id });
   }
 
-  async edit(editMessageDto: CreateMessageDto, id: string) {
+  async edit(editMessageDto: CreateMessageDto, id: string, user_id: string) {
+    await this.checkMessage(id, user_id);
     await this.messageModel.updateOne(
       { id: id },
       { content: editMessageDto.content },
     );
+  }
+
+  private async checkMessage(id: string, user_id: string) {
+    const message = await this.messageModel.findOne({ id: id });
+    if (!message) throw new HttpException('No content', HttpStatus.NO_CONTENT);
+
+    console.log(user_id);
+    console.log(message.get('user_id'));
+    if (user_id !== message.get('user_id').toString())
+      throw new ForbiddenException();
   }
 }

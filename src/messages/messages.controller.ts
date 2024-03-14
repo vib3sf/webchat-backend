@@ -5,10 +5,10 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { DeleteMessageDto } from './dto/delete-message.dto';
 import { MessagesService } from './messages.service';
 import { Message } from './entity/messages.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -19,18 +19,17 @@ export class MessagesController {
 
   @Post()
   @UseGuards(AuthGuard)
-  async create(@Body() createMessageDto: CreateMessageDto): Promise<Message> {
-    return await this.messagesService.create(createMessageDto);
+  async create(
+    @Body() createMessageDto: CreateMessageDto,
+    @Request() req: any,
+  ): Promise<Message> {
+    return await this.messagesService.create(createMessageDto, req.user.sub);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  async delete(
-    @Body() deleteMessageDto: DeleteMessageDto,
-    @Param('id') id: string,
-  ): Promise<void> {
-    console.log(id);
-    await this.messagesService.delete(deleteMessageDto, id);
+  async delete(@Param('id') id: string, @Request() req: any): Promise<void> {
+    await this.messagesService.delete(id, req.user.sub);
   }
 
   @Patch(':id')
@@ -38,7 +37,8 @@ export class MessagesController {
   async edit(
     @Body() editMessageDto: CreateMessageDto,
     @Param('id') id: string,
+    @Request() req: any,
   ): Promise<void> {
-    await this.messagesService.edit(editMessageDto, id);
+    await this.messagesService.edit(editMessageDto, id, req.user.sub);
   }
 }
