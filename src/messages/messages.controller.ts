@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
@@ -16,6 +17,12 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('messages')
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
+
+  @Get()
+  @UseGuards(AuthGuard)
+  async get(){
+    return this.messagesService.get();
+  }
 
   @Post()
   @UseGuards(AuthGuard)

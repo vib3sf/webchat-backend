@@ -12,8 +12,13 @@ import { Model } from 'mongoose';
 @Injectable()
 export class MessagesService {
   constructor(
-    @InjectModel(Message.name) private messageModel: Model<Message>,
+    @InjectModel(Message.name)
+    private messageModel: Model<Message>,
   ) {}
+
+  async get() {
+    return await this.messageModel.find().exec();
+  }
 
   async create(
     createMessageDto: CreateMessageDto,
@@ -21,7 +26,8 @@ export class MessagesService {
   ): Promise<Message> {
     createMessageDto.user_id = user_id;
     console.log(createMessageDto);
-    return await new this.messageModel(createMessageDto).save();
+    const message = await new this.messageModel(createMessageDto).save();
+    return message;
   }
 
   async delete(id: string, user_id: string) {
