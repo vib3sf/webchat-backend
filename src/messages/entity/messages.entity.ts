@@ -10,6 +10,9 @@ export class Message {
   user_id: Types.ObjectId;
 
   @Prop()
+  user_name: string;
+
+  @Prop()
   content: string;
 }
 

@@ -18,6 +18,12 @@ export class EventsGateway implements OnModuleInit {
     });
   }
 
+  sendMessageToClients(content: string, user_name: string, type: string): void {
+    this.server.emit('onMessage', {
+      message: { type: type, data: { content: content, user_name: user_name } },
+    });
+  }
+
   @SubscribeMessage('MessagesChannel')
   handleMessage(@MessageBody() body: any): void {
     console.log(`Recv: ${body}`);

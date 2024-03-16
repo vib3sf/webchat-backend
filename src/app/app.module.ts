@@ -19,6 +19,6 @@ import { EventsGateway } from 'src/events/events.gateway';
     MongooseModule.forRoot('mongodb://localhost/db'),
   ],
   controllers: [AppController],
-  providers: [AppService, EventsGateway],
+  providers: [AppService],
 })
 export class AppModule {}

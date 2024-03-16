@@ -8,12 +8,14 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Message } from './entity/messages.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import {EventsGateway} from 'src/events/events.gateway';
 
 @Injectable()
 export class MessagesService {
   constructor(
     @InjectModel(Message.name)
     private messageModel: Model<Message>,
+    private EventsGateway: EventsGateway
   ) {}
 
   async get() {
@@ -27,6 +29,7 @@ export class MessagesService {
     createMessageDto.user_id = user_id;
     console.log(createMessageDto);
     const message = await new this.messageModel(createMessageDto).save();
+    this.EventsGateway.sendMessageToClients(message.content, message.user_name,'create')
     return message;
   }
 
