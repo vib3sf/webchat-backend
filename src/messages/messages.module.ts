@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MessagesController } from './messages.controller';
 import { MessagesService } from './messages.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Message, MessageSchema } from './entity/messages.entity';
 import { AuthModule } from 'src/auth/auth.module';
-import { EventsGateway } from 'src/events/events.gateway';
+import {EventsModule} from 'src/events/events.module';
 
 @Module({
   imports: [
@@ -15,8 +15,10 @@ import { EventsGateway } from 'src/events/events.gateway';
       },
     ]),
     AuthModule,
+    EventsModule
   ],
   controllers: [MessagesController],
-  providers: [MessagesService, EventsGateway],
+  providers: [MessagesService],
+  exports: [MessagesService],
 })
 export class MessagesModule {}
