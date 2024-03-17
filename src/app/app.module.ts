@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from 'src/config/configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MessagesModule } from 'src/messages/messages.module';
-import { EventsGateway } from 'src/events/events.gateway';
 
 @Module({
   imports: [
