@@ -15,7 +15,7 @@ export class MessagesService {
   constructor(
     @InjectModel(Message.name)
     private messageModel: Model<Message>,
-    private EventsGateway: EventsGateway
+    private eventsGateway: EventsGateway
   ) {}
 
   async get() {
@@ -29,13 +29,14 @@ export class MessagesService {
     createMessageDto.user_id = user_id;
     console.log(createMessageDto);
     const message = await new this.messageModel(createMessageDto).save();
-    this.EventsGateway.sendMessageToClients(message.content, message.user_name,'create')
+    this.eventsGateway.sendMessageToClients(message.content, message.user_name)
     return message;
   }
 
   async delete(id: string, user_id: string) {
     await this.checkMessage(id, user_id);
     await this.messageModel.deleteOne({ id: id });
+    this.eventsGateway.updateMessagesToClients(await this.get(), 'destroy');
   }
 
   async edit(editMessageDto: CreateMessageDto, id: string, user_id: string) {
@@ -44,6 +45,7 @@ export class MessagesService {
       { id: id },
       { content: editMessageDto.content },
     );
+    this.eventsGateway.updateMessagesToClients(await this.get(), 'update');
   }
 
   private async checkMessage(id: string, user_id: string) {

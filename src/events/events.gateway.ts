@@ -6,6 +6,7 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { Message } from 'src/messages/entity/messages.entity';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class EventsGateway implements OnModuleInit {
@@ -18,9 +19,24 @@ export class EventsGateway implements OnModuleInit {
     });
   }
 
-  sendMessageToClients(content: string, user_name: string, type: string): void {
+  sendMessageToClients(content: string, user_name: string): void {
     this.server.emit('onMessage', {
-      message: { type: type, data: { content: content, user_name: user_name } },
+      message: {
+        type: 'create',
+        data: { content: content, user_name: user_name },
+      },
+    });
+  }
+
+  updateMessagesToClients(messages: Array<Message>, type: string): void {
+    const data = messages.map((elem: Message) => {
+      return { content: elem.content, user_name: elem.user_name };
+    });
+    this.server.emit('onMessage', {
+      message: {
+        type: type,
+        data: data,
+      },
     });
   }
 
