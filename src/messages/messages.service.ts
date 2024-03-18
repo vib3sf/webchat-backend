@@ -65,7 +65,7 @@ export class MessagesService {
     const message = await this.messageModel.findOne({ id: id });
     if (!message) {
       this.logger.error(`
-      Message is empty.
+      Message is not found.
       id: ${id},
       user_id: ${user_id}`);
       throw new HttpException('No content', HttpStatus.NO_CONTENT);
