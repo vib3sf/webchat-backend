@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { EventsGateway } from './events.gateway';
+import { MessagesService } from './messages.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Message, MessageSchema } from 'src/messages/entity/messages.entity';
+import { Message, MessageSchema } from './entity/messages.entity';
 
 @Module({
   imports: [
@@ -12,7 +12,8 @@ import { Message, MessageSchema } from 'src/messages/entity/messages.entity';
       },
     ]),
   ],
-  providers: [EventsGateway],
-  exports: [EventsGateway],
+
+  providers: [MessagesService],
+  exports: [MessagesService],
 })
-export class EventsModule {}
+export class MessagesModule {}

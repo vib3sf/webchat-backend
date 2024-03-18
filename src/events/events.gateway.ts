@@ -8,7 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Model } from 'mongoose';
 import { Server } from 'socket.io';
-import {Message} from 'src/chat/entity/messages.entity';
+import { Message } from 'src/messages/entity/messages.entity';
 
 @Injectable()
 @WebSocketGateway({ cors: { origin: '*' } })
