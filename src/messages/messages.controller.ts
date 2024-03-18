@@ -20,7 +20,7 @@ export class MessagesController {
 
   @Get()
   @UseGuards(AuthGuard)
-  async get(){
+  async get() {
     return this.messagesService.get();
   }
 
