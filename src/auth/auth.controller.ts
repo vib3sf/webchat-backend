@@ -20,15 +20,14 @@ export class AuthController {
 
   constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body('user') loginDto: LoginUserDto) {
+  async login(@Body('user') loginDto: LoginUserDto) {
     this.logger.verbose(`User ${loginDto.username} has been authorized`);
     return this.authService.login(loginDto);
   }
 
   @Post('register')
-  register(@Body('user') createUserDto: CreateUserDto) {
+  async register(@Body('user') createUserDto: CreateUserDto) {
     this.logger.verbose(`User ${createUserDto.username} has been registered`);
     return this.authService.register(createUserDto);
   }

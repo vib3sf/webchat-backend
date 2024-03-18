@@ -19,7 +19,7 @@ export class EventsGateway implements OnModuleInit {
   ) {}
   @WebSocketServer() server: Server;
 
-  onModuleInit() {
+  async onModuleInit(): Promise<void> {
     this.server.on('connection', (socket) => {
       console.log(socket.id);
       console.log('Connected');
@@ -38,7 +38,10 @@ export class EventsGateway implements OnModuleInit {
     });
   }
 
-  updateMessagesToClients(messages: Array<Message>, type: string): void {
+  async updateMessagesToClients(
+    messages: Array<Message>,
+    type: string,
+  ): Promise<void> {
     const data = messages.map((elem: Message) => {
       return { content: elem.content, user_name: elem.user_name };
     });
