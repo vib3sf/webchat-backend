@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -12,13 +12,14 @@ import { MessagesService } from 'src/messages/messages.service';
 @Injectable()
 @WebSocketGateway({ cors: { origin: '*' } })
 export class EventsGateway implements OnModuleInit {
+  private logger = new Logger('WebSocketGateway');
+
   constructor(private readonly messagesService: MessagesService) {}
   @WebSocketServer() server: Server;
 
   async onModuleInit(): Promise<void> {
     this.server.on('connection', (socket) => {
-      console.log(socket.id);
-      console.log('Connected');
+      this.logger.verbose(`Socket ${socket.id} has been connected`);
     });
   }
 
