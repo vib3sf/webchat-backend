@@ -37,7 +37,7 @@ export class AuthService {
 
   async register(createUserDto: CreateUserDto): Promise<void> {
     if (await this.usersService.findOne(createUserDto.username)) {
-      this.logger.error('Username already exist');
+      this.logger.log(`Username ${createUserDto.username} already exist.`);
       throw new ConflictException('Username already exist');
     }
 
