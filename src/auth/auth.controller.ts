@@ -7,6 +7,7 @@ import {
   Post,
   UseGuards,
   Request,
+  Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
@@ -15,16 +16,20 @@ import { LoginUserDto } from 'src/users/dto/login-user.dto';
 
 @Controller('')
 export class AuthController {
+  private logger = new Logger('AuthController');
+
   constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
   login(@Body('user') loginDto: LoginUserDto) {
+    this.logger.verbose(`User ${loginDto.username} has been authorized`);
     return this.authService.login(loginDto);
   }
 
   @Post('register')
   register(@Body('user') createUserDto: CreateUserDto) {
+    this.logger.verbose(`User ${createUserDto.username} has been registered`);
     return this.authService.register(createUserDto);
   }
 
