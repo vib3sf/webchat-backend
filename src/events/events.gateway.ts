@@ -1,22 +1,18 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import {
   WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
   MessageBody,
 } from '@nestjs/websockets';
-import { Model } from 'mongoose';
 import { Server } from 'socket.io';
-import {Message} from 'src/chat/entity/messages.entity';
+import { Message } from 'src/messages/entity/messages.entity';
+import { MessagesService } from 'src/messages/messages.service';
 
 @Injectable()
 @WebSocketGateway({ cors: { origin: '*' } })
 export class EventsGateway implements OnModuleInit {
-  constructor(
-    @InjectModel(Message.name)
-    private readonly messageModel: Model<Message>,
-  ) {}
+  constructor(private readonly messagesService: MessagesService) {}
   @WebSocketServer() server: Server;
 
   async onModuleInit(): Promise<void> {
@@ -55,7 +51,7 @@ export class EventsGateway implements OnModuleInit {
 
   @SubscribeMessage('Connection')
   async handleMessage(@MessageBody() body: any): Promise<void> {
-    const messages = await this.messageModel.find().exec();
+    const messages = await this.messagesService.get();
     const data = messages.map((elem: Message) => {
       return { content: elem.content, user_name: elem.user_name };
     });

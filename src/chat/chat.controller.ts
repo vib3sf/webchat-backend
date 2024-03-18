@@ -2,27 +2,20 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   Param,
   Patch,
   Post,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { CreateMessageDto } from './dto/create-message.dto';
+import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { ChatService } from './chat.service';
-import { Message } from './entity/messages.entity';
+import { Message } from 'src/messages/entity/messages.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('messages')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
-
-  @Get()
-  @UseGuards(AuthGuard)
-  async get(){
-    return this.chatService.get();
-  }
 
   @Post()
   @UseGuards(AuthGuard)
@@ -30,6 +23,7 @@ export class ChatController {
     @Body() createChatDto: CreateMessageDto,
     @Request() req: any,
   ): Promise<Message> {
+    console.log('create');
     return await this.chatService.create(createChatDto, req.user.sub);
   }
 

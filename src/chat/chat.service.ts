@@ -1,34 +1,21 @@
-import {
-  ForbiddenException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { Message } from './entity/messages.entity';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
 import { EventsGateway } from 'src/events/events.gateway';
+import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
+import { Message } from 'src/messages/entity/messages.entity';
+import { MessagesService } from 'src/messages/messages.service';
 
 @Injectable()
 export class ChatService {
   constructor(
-    @InjectModel(Message.name)
-    private readonly messageModel: Model<Message>,
+    private readonly messageService: MessagesService,
     private readonly eventsGateway: EventsGateway,
   ) {}
-
-  async get() {
-    return await this.messageModel.find().exec();
-  }
 
   async create(
     createMessageDto: CreateMessageDto,
     user_id: string,
   ): Promise<Message> {
-    createMessageDto.user_id = user_id;
-    console.log(createMessageDto);
-    const message = await new this.messageModel(createMessageDto).save();
+    const message = await this.messageService.create(createMessageDto, user_id);
     await this.eventsGateway.sendMessageToClients(
       message.content,
       message.user_name,
@@ -37,27 +24,18 @@ export class ChatService {
   }
 
   async delete(id: string, user_id: string) {
-    await this.checkMessage(id, user_id);
-    await this.messageModel.deleteOne({ id: id });
-    this.eventsGateway.updateMessagesToClients(await this.get(), 'destroy');
+    await this.messageService.delete(id, user_id);
+    await this.eventsGateway.updateMessagesToClients(
+      await this.messageService.get(),
+      'destroy',
+    );
   }
 
   async edit(editMessageDto: CreateMessageDto, id: string, user_id: string) {
-    await this.checkMessage(id, user_id);
-    await this.messageModel.updateOne(
-      { id: id },
-      { content: editMessageDto.content },
+    await this.messageService.edit(editMessageDto, id, user_id);
+    await this.eventsGateway.updateMessagesToClients(
+      await this.messageService.get(),
+      'update',
     );
-    this.eventsGateway.updateMessagesToClients(await this.get(), 'update');
-  }
-
-  private async checkMessage(id: string, user_id: string) {
-    const message = await this.messageModel.findOne({ id: id });
-    if (!message) throw new HttpException('No content', HttpStatus.NO_CONTENT);
-
-    console.log(user_id);
-    console.log(message.get('user_id'));
-    if (user_id !== message.get('user_id').toString())
-      throw new ForbiddenException();
   }
 }
