@@ -13,6 +13,6 @@ import { Message, MessageSchema } from 'src/messages/entity/messages.entity';
     ]),
   ],
   providers: [EventsGateway],
-  exports: [EventsGateway]
+  exports: [EventsGateway],
 })
 export class EventsModule {}

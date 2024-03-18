@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -12,6 +13,8 @@ import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
+  private logger = new Logger('AuthService');
+
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -19,7 +22,12 @@ export class AuthService {
 
   async login(loginDto: LoginUserDto): Promise<AuthUserDto> {
     const user = await this.usersService.findOne(loginDto.username);
-    if (user?.password !== loginDto.password) throw new UnauthorizedException();
+    if (user?.password !== loginDto.password) {
+      this.logger.error(
+        `Incorrect login or password for user ${user.username}`,
+      );
+      throw new UnauthorizedException();
+    }
 
     return {
       user: { name: user.username, id: user.id },
@@ -28,11 +36,15 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto): Promise<void> {
-    if (await this.usersService.findOne(createUserDto.username))
+    if (await this.usersService.findOne(createUserDto.username)) {
+      this.logger.error('Username already exist');
       throw new ConflictException('Username already exist');
+    }
 
-    if (createUserDto.password !== createUserDto.confirmation_password)
-      throw new ConflictException('Passwords did not match');
+    if (createUserDto.password !== createUserDto.confirmation_password) {
+      this.logger.log('Passwords did not match');
+      throw new UnauthorizedException('Passwords did not match');
+    }
 
     await this.usersService.create(createUserDto);
   }

@@ -1,5 +1,5 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -15,7 +15,7 @@ import { Message } from 'src/messages/entity/messages.entity';
 export class EventsGateway implements OnModuleInit {
   constructor(
     @InjectModel(Message.name)
-    private readonly messageModel: Model<Message>
+    private readonly messageModel: Model<Message>,
   ) {}
   @WebSocketServer() server: Server;
 
