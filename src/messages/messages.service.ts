@@ -41,7 +41,6 @@ export class MessagesService {
   async delete(id: string, user_id: string) {
     await this.checkMessage(id, user_id);
     await this.messageModel.deleteOne({ id: id });
-
     this.logger.verbose(
       `Message has been deleteted.
       id: ${id},
@@ -55,7 +54,6 @@ export class MessagesService {
       { id: id },
       { content: editMessageDto.content },
     );
-
     this.logger.verbose(
       `Message has been updated.
       id: ${id},  
