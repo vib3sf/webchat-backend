@@ -11,7 +11,7 @@ import { Model } from 'mongoose';
 import { EventsGateway } from 'src/events/events.gateway';
 
 @Injectable()
-export class MessagesService {
+export class ChatService {
   constructor(
     @InjectModel(Message.name)
     private readonly messageModel: Model<Message>,
