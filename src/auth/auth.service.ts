@@ -1,4 +1,9 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthUserDto } from 'src/users/dto/auth-user.dto';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -33,12 +38,12 @@ export class AuthService {
   async register(createUserDto: CreateUserDto): Promise<void> {
     if (await this.usersService.findOne(createUserDto.username)) {
       this.logger.error('Username already exist');
-      // throw new ConflictException('Username already exist');
+      throw new ConflictException('Username already exist');
     }
 
     if (createUserDto.password !== createUserDto.confirmation_password) {
       this.logger.log('Passwords did not match');
-      // throw new ConflictException('Passwords did not match');
+      throw new UnauthorizedException('Passwords did not match');
     }
 
     await this.usersService.create(createUserDto);
