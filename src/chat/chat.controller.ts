@@ -10,42 +10,42 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { MessagesService } from './messages.service';
+import { ChatService } from './chat.service';
 import { Message } from './entity/messages.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('messages')
-export class MessagesController {
-  constructor(private readonly messagesService: MessagesService) {}
+export class ChatController {
+  constructor(private readonly chatService: ChatService) {}
 
   @Get()
   @UseGuards(AuthGuard)
   async get(){
-    return this.messagesService.get();
+    return this.chatService.get();
   }
 
   @Post()
   @UseGuards(AuthGuard)
   async create(
-    @Body() createMessageDto: CreateMessageDto,
+    @Body() createChatDto: CreateMessageDto,
     @Request() req: any,
   ): Promise<Message> {
-    return await this.messagesService.create(createMessageDto, req.user.sub);
+    return await this.chatService.create(createChatDto, req.user.sub);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   async delete(@Param('id') id: string, @Request() req: any): Promise<void> {
-    await this.messagesService.delete(id, req.user.sub);
+    await this.chatService.delete(id, req.user.sub);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard)
   async edit(
-    @Body() editMessageDto: CreateMessageDto,
+    @Body() editChatDto: CreateMessageDto,
     @Param('id') id: string,
     @Request() req: any,
   ): Promise<void> {
-    await this.messagesService.edit(editMessageDto, id, req.user.sub);
+    await this.chatService.edit(editChatDto, id, req.user.sub);
   }
 }

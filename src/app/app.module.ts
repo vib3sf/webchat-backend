@@ -5,7 +5,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from 'src/config/configuration';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MessagesModule } from 'src/messages/messages.module';
+import { ChatModule } from 'src/chat/chat.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { MessagesModule } from 'src/messages/messages.module';
       load: [configuration],
     }),
     AuthModule,
-    MessagesModule,
+    ChatModule,
     MongooseModule.forRoot('mongodb://localhost/db'),
   ],
   controllers: [AppController],

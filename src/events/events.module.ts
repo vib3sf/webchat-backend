@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { EventsGateway } from './events.gateway';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Message, MessageSchema } from 'src/messages/entity/messages.entity';
+import {Message, MessageSchema} from 'src/chat/entity/messages.entity';
 
 @Module({
   imports: [
