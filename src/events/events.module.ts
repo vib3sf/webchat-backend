@@ -1,17 +1,9 @@
 import { Module } from '@nestjs/common';
 import { EventsGateway } from './events.gateway';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Message, MessageSchema } from 'src/messages/entity/messages.entity';
+import { MessagesModule } from 'src/messages/messages.module';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      {
-        name: Message.name,
-        schema: MessageSchema,
-      },
-    ]),
-  ],
+  imports: [MessagesModule],
   providers: [EventsGateway],
   exports: [EventsGateway],
 })
