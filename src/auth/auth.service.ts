@@ -1,5 +1,7 @@
 import {
   ConflictException,
+  HttpException,
+  HttpStatus,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -23,11 +25,14 @@ export class AuthService {
 
   async login(loginDto: LoginUserDto): Promise<AuthUserDto> {
     const user = await this.usersService.findOne(loginDto.username);
+    if (!user) {
+      this.logger.error(`Incorrect login for user.`);
+      throw new UnauthorizedException('Incorrect login or password');
+    }
+
     if (!verify(user.password, loginDto.password)) {
-      this.logger.error(
-        `Incorrect login or password for user ${user.username}`,
-      );
-      throw new UnauthorizedException();
+      this.logger.error(`Incorrect password for user ${user.username}`);
+      throw new UnauthorizedException('Incorrect login or password');
     }
 
     return {
