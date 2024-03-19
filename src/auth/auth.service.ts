@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { hash, verify } from 'argon2';
 import { AuthUserDto } from 'src/users/dto/auth-user.dto';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
@@ -22,7 +23,7 @@ export class AuthService {
 
   async login(loginDto: LoginUserDto): Promise<AuthUserDto> {
     const user = await this.usersService.findOne(loginDto.username);
-    if (user?.password !== loginDto.password) {
+    if (!verify(user.password, loginDto.password)) {
       this.logger.error(
         `Incorrect login or password for user ${user.username}`,
       );
@@ -46,6 +47,7 @@ export class AuthService {
       throw new UnauthorizedException('Passwords did not match');
     }
 
+    createUserDto.password = await hash(createUserDto.password);
     await this.usersService.create(createUserDto);
   }
 
