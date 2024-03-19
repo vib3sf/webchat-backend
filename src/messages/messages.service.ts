@@ -71,12 +71,13 @@ export class MessagesService {
       throw new HttpException('No content', HttpStatus.NO_CONTENT);
     }
 
-    if (user_id !== message.get('user_id').toString())
+    if (user_id !== message.get('user_id').toString()) {
       this.logger.error(
         `Forbidden.
         id: ${id},
         user_id: ${user_id}`,
       );
-    throw new ForbiddenException();
+      throw new ForbiddenException();
+    }
   }
 }
