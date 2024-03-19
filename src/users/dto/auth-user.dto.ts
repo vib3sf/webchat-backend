@@ -1,6 +1,13 @@
+import { IsNotEmpty } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class AuthUserDto {
-  user: { name: string; id: Types.ObjectId };
+  @IsNotEmpty()
+  user: {
+    name: string;
+    id: Types.ObjectId;
+  };
+
+  @IsNotEmpty()
   token: string;
 }

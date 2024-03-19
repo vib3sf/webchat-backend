@@ -13,10 +13,18 @@ export class UsersService {
     return user.save();
   }
 
-  async findOne(username: string): Promise<User> {
+  async findOneByName(username: string): Promise<User> {
     return this.userModel
       .findOne({
         username: username,
+      })
+      .exec();
+  }
+
+  async findOneById(user_id: string): Promise<User> {
+    return this.userModel
+      .findOne({
+        id: user_id,
       })
       .exec();
   }

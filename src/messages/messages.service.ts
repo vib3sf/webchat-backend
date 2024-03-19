@@ -5,10 +5,10 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { CreateMessageDto } from './dto/create-message.dto';
 import { Message } from 'src/messages/entity/messages.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CreateMessageDto } from './dto/create-message.dto';
 
 @Injectable()
 export class MessagesService {
@@ -48,16 +48,13 @@ export class MessagesService {
     );
   }
 
-  async edit(editMessageDto: CreateMessageDto, id: string, user_id: string) {
+  async edit(editContent: string, id: string, user_id: string) {
     await this.checkMessage(id, user_id);
-    await this.messageModel.updateOne(
-      { id: id },
-      { content: editMessageDto.content },
-    );
+    await this.messageModel.updateOne({ id: id }, { content: editContent });
     this.logger.verbose(
       `Message has been updated.
       id: ${id},  
-      content: ${editMessageDto.content}`,
+      content: ${editContent}`,
     );
   }
 

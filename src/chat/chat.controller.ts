@@ -8,10 +8,10 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { ChatService } from './chat.service';
 import { Message } from 'src/messages/entity/messages.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { CreateChatDto } from './dto/create-chat.dto';
 
 @Controller('messages')
 export class ChatController {
@@ -20,7 +20,7 @@ export class ChatController {
   @Post()
   @UseGuards(AuthGuard)
   async create(
-    @Body() createChatDto: CreateMessageDto,
+    @Body() createChatDto: CreateChatDto,
     @Request() req: any,
   ): Promise<Message> {
     console.log('create');
@@ -36,7 +36,7 @@ export class ChatController {
   @Patch(':id')
   @UseGuards(AuthGuard)
   async edit(
-    @Body() editChatDto: CreateMessageDto,
+    @Body() editChatDto: CreateChatDto,
     @Param('id') id: string,
     @Request() req: any,
   ): Promise<void> {
