@@ -1,7 +1,5 @@
 import {
   ConflictException,
-  HttpException,
-  HttpStatus,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -30,11 +28,12 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect login or password');
     }
 
-    if (!await verify(user.password, loginDto.password)) {
+    if (!(await verify(user.password, loginDto.password))) {
       this.logger.error(`Incorrect password for user ${user.username}`);
       throw new UnauthorizedException('Incorrect login or password');
     }
 
+    this.logger.verbose(`User ${loginDto.username} has been authorized`);
     return {
       user: { name: user.username, id: user.id },
       token: await this.getToken(user),
@@ -54,6 +53,8 @@ export class AuthService {
 
     createUserDto.password = await hash(createUserDto.password);
     await this.usersService.create(createUserDto);
+
+    this.logger.verbose(`User ${createUserDto.username} has been registered`);
   }
 
   private async getToken(user: User): Promise<any> {
