@@ -20,14 +20,14 @@ export class AuthController {
 
   @Post('login')
   async login(@Body('user') loginDto: LoginUserDto) {
-    const authUser = this.authService.login(loginDto);
+    const authUser = await this.authService.login(loginDto);
     this.logger.verbose(`User ${loginDto.username} has been authorized`);
     return authUser;
   }
 
   @Post('register')
   async register(@Body('user') createUserDto: CreateUserDto) {
-    this.authService.register(createUserDto);
+    await this.authService.register(createUserDto);
     this.logger.verbose(`User ${createUserDto.username} has been registered`);
   }
 

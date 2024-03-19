@@ -24,13 +24,13 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginUserDto): Promise<AuthUserDto> {
-    const user = await this.usersService.findOne(loginDto.username);
+    const user = await this.usersService.findOneByName(loginDto.username);
     if (!user) {
       this.logger.error(`Incorrect login for user.`);
       throw new UnauthorizedException('Incorrect login or password');
     }
 
-    if (!verify(user.password, loginDto.password)) {
+    if (!await verify(user.password, loginDto.password)) {
       this.logger.error(`Incorrect password for user ${user.username}`);
       throw new UnauthorizedException('Incorrect login or password');
     }
@@ -42,7 +42,7 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto): Promise<void> {
-    if (await this.usersService.findOne(createUserDto.username)) {
+    if (await this.usersService.findOneByName(createUserDto.username)) {
       this.logger.log(`Username ${createUserDto.username} already exist.`);
       throw new ConflictException('Username already exist');
     }

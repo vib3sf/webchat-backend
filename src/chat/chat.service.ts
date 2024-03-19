@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EventsGateway } from 'src/events/events.gateway';
-import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { Message } from 'src/messages/entity/messages.entity';
 import { MessagesService } from 'src/messages/messages.service';
+import { UsersService } from 'src/users/users.service';
+import { CreateChatDto } from './dto/create-chat.dto';
 
 @Injectable()
 export class ChatService {
@@ -11,13 +12,22 @@ export class ChatService {
   constructor(
     private readonly messageService: MessagesService,
     private readonly eventsGateway: EventsGateway,
+    private readonly usersService: UsersService,
   ) {}
 
   async create(
-    createMessageDto: CreateMessageDto,
+    createChatDto: CreateChatDto,
     user_id: string,
   ): Promise<Message> {
-    const message = await this.messageService.create(createMessageDto, user_id);
+    const user = await this.usersService.findOneById(user_id);
+    const message = await this.messageService.create(
+      {
+        user_name: user.username,
+        user_id: user.id.toString(),
+        content: createChatDto.content,
+      },
+      user_id,
+    );
     await this.eventsGateway.sendMessageToClients(
       message.content,
       message.user_name,
@@ -31,11 +41,11 @@ export class ChatService {
   }
 
   async edit(
-    editMessageDto: CreateMessageDto,
+    editChatDto: CreateChatDto,
     id: string,
     user_id: string,
   ): Promise<void> {
-    await this.messageService.edit(editMessageDto, id, user_id);
+    await this.messageService.edit(editChatDto.content, id, user_id);
     await this.eventsGateway.updateMessagesToClients('update');
   }
 }
