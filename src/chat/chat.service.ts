@@ -25,19 +25,17 @@ export class ChatService {
     return message;
   }
 
-  async delete(id: string, user_id: string) {
+  async delete(id: string, user_id: string): Promise<void> {
     await this.messageService.delete(id, user_id);
-    await this.eventsGateway.updateMessagesToClients(
-      await this.messageService.get(),
-      'destroy',
-    );
+    await this.eventsGateway.updateMessagesToClients('destroy');
   }
 
-  async edit(editMessageDto: CreateMessageDto, id: string, user_id: string) {
+  async edit(
+    editMessageDto: CreateMessageDto,
+    id: string,
+    user_id: string,
+  ): Promise<void> {
     await this.messageService.edit(editMessageDto, id, user_id);
-    await this.eventsGateway.updateMessagesToClients(
-      await this.messageService.get(),
-      'update',
-    );
+    await this.eventsGateway.updateMessagesToClients('update');
   }
 }
