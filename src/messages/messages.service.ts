@@ -23,16 +23,13 @@ export class MessagesService {
     return await this.messageModel.find().exec();
   }
 
-  async create(
-    createMessageDto: CreateMessageDto,
-    user_id: string,
-  ): Promise<Message> {
-    createMessageDto.user_id = user_id;
+  async create(createMessageDto: CreateMessageDto): Promise<Message> {
     this.logger.verbose(
       `Message has been created. 
       user_id: ${createMessageDto.user_id}, 
       user_name: ${createMessageDto.user_name}, 
-      content: ${createMessageDto.content}`,
+      content: ${createMessageDto.content}
+      created at: ${createMessageDto.created_at}`,
     );
     const message = await new this.messageModel(createMessageDto).save();
     return message;

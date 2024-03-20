@@ -20,14 +20,12 @@ export class ChatService {
     user_id: string,
   ): Promise<Message> {
     const user = await this.usersService.findOneById(user_id);
-    const message = await this.messageService.create(
-      {
-        user_name: user.username,
-        user_id: user.id.toString(),
-        content: createChatDto.content,
-      },
-      user_id,
-    );
+    const message = await this.messageService.create({
+      user_name: user.username,
+      user_id: user.id.toString(),
+      content: createChatDto.content,
+      created_at: new Date(),
+    });
     await this.eventsGateway.sendMessageToClients(message);
     return message;
   }
@@ -42,7 +40,12 @@ export class ChatService {
     id: string,
     user_id: string,
   ): Promise<void> {
-    await this.messageService.edit(editChatDto.content, id, user_id);
+    const message = await this.messageService.edit(
+      editChatDto.content,
+      id,
+      user_id,
+    );
     await this.eventsGateway.updateMessagesToClients('update');
+    return message;
   }
 }

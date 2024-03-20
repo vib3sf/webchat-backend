@@ -14,6 +14,9 @@ export class Message {
 
   @Prop()
   content: string;
+
+  @Prop()
+  created_at: Date;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

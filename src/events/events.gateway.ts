@@ -32,6 +32,7 @@ export class EventsGateway implements OnModuleInit {
           user_name: message.user_name,
           id: message.id,
           user_id: message.user_id,
+          created_at: message.created_at,
         },
       },
     });
@@ -68,6 +69,7 @@ export class EventsGateway implements OnModuleInit {
         user_name: elem.user_name,
         id: elem.id.toString(),
         user_id: elem.user_id.toString(),
+        created_at: elem.created_at,
       };
     });
   }
