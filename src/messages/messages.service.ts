@@ -19,7 +19,7 @@ export class MessagesService {
     private readonly messageModel: Model<Message>,
   ) {}
 
-  async get() {
+  async findAll() {
     return await this.messageModel.find().exec();
   }
 

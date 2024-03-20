@@ -28,10 +28,7 @@ export class ChatService {
       },
       user_id,
     );
-    await this.eventsGateway.sendMessageToClients(
-      message.content,
-      message.user_name,
-    );
+    await this.eventsGateway.sendMessageToClients(message);
     return message;
   }
 

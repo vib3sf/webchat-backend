@@ -3,7 +3,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
-  MessageBody,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Message } from 'src/messages/entity/messages.entity';
@@ -24,14 +23,16 @@ export class EventsGateway implements OnModuleInit {
     });
   }
 
-  async sendMessageToClients(
-    content: string,
-    user_name: string,
-  ): Promise<void> {
+  async sendMessageToClients(message: Message): Promise<void> {
     this.server.emit('onMessage', {
       message: {
         type: 'create',
-        data: { content: content, user_name: user_name },
+        data: {
+          content: message.content,
+          user_name: message.user_name,
+          id: message.id,
+          user_id: message.user_id,
+        },
       },
     });
   }
@@ -47,7 +48,7 @@ export class EventsGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('Connection')
-  async handleMessage(@MessageBody() body: any): Promise<void> {
+  async handleMessage(): Promise<void> {
     const data = await this.getSendData();
     this.server.emit(
       'onMessage',
@@ -61,8 +62,13 @@ export class EventsGateway implements OnModuleInit {
   }
 
   private async getSendData(): Promise<Array<SendMessageDto>> {
-    return (await this.messagesService.get()).map((elem: Message) => {
-      return { content: elem.content, user_name: elem.user_name };
+    return (await this.messagesService.findAll()).map((elem: Message) => {
+      return {
+        content: elem.content,
+        user_name: elem.user_name,
+        id: elem.id.toString(),
+        user_id: elem.user_id.toString(),
+      };
     });
   }
 }
