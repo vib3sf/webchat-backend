@@ -39,7 +39,7 @@ export class ChatController {
     @Body() editChatDto: CreateChatDto,
     @Param('id') id: string,
     @Request() req: any,
-  ): Promise<void> {
-    await this.chatService.edit(editChatDto, id, req.user.sub);
+  ): Promise<Message> {
+    return await this.chatService.edit(editChatDto, id, req.user.sub);
   }
 }
