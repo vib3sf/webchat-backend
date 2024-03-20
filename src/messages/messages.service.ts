@@ -45,14 +45,22 @@ export class MessagesService {
     );
   }
 
-  async edit(editContent: string, id: string, user_id: string) {
+  async edit(
+    editContent: string,
+    id: string,
+    user_id: string,
+  ): Promise<Message> {
     await this.checkMessage(id, user_id);
-    await this.messageModel.updateOne({ id: id }, { content: editContent });
+    const message = await this.messageModel.findOneAndUpdate(
+      { id: id },
+      { content: editContent },
+    );
     this.logger.verbose(
       `Message has been updated.
       id: ${id},  
       content: ${editContent}`,
     );
+    return message;
   }
 
   private async checkMessage(id: string, user_id: string) {

@@ -39,7 +39,7 @@ export class ChatService {
     editChatDto: CreateChatDto,
     id: string,
     user_id: string,
-  ): Promise<void> {
+  ): Promise<Message> {
     const message = await this.messageService.edit(
       editChatDto.content,
       id,
