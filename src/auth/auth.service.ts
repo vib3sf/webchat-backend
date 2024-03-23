@@ -62,7 +62,7 @@ export class AuthService {
     return this.getToken(user);
   }
 
-  private async getToken(user: User): Promise<any> {
+  private async getToken(user: User): Promise<string> {
     return this.jwtService.signAsync({
       sub: user.id,
       username: user.username,

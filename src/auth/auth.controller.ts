@@ -4,7 +4,7 @@ import {
   Get,
   Post,
   UseGuards,
-  Request,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
@@ -12,6 +12,8 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
 import { AuthUserDto } from 'src/users/dto/auth-user.dto';
 import { UsersService } from 'src/users/users.service';
+import { Sub } from './auth.decorator';
+import {TokenDto} from './dto/token.dto';
 
 @Controller('')
 export class AuthController {
@@ -32,15 +34,15 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Post('refresh')
-  async refresh(@Request() req: any): Promise<any> {
+  async refresh(@Sub() sub: string): Promise<TokenDto> {
     return { 
-      token: await this.authService.refresh(await this.userService.findOneById(req.user.sub)) 
+      token: await this.authService.refresh(await this.userService.findOneById(sub))
     };
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() req: any) {
-    return req.user;
+  getProfile(@Sub() sub: string) {
+    return sub;
   }
 }
