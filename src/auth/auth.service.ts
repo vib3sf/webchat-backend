@@ -57,6 +57,11 @@ export class AuthService {
     this.logger.verbose(`User ${createUserDto.username} has been registered`);
   }
 
+  async refresh(user: User)
+  {
+    return this.getToken(user);
+  }
+
   private async getToken(user: User): Promise<any> {
     return this.jwtService.signAsync({
       sub: user.id,
