@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { hash, verify } from 'argon2';
-import { AuthUserDto } from 'src/users/dto/auth-user.dto';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
 import { User } from 'src/users/entity/users.entity';
 import { UsersService } from 'src/users/users.service';
+import { LoginUserDto } from './dto/login-user.dto';
+import { AuthUserDto } from './dto/auth-user.dto';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -57,8 +57,7 @@ export class AuthService {
     this.logger.verbose(`User ${createUserDto.username} has been registered`);
   }
 
-  async refresh(user: User)
-  {
+  async refresh(user: User) {
     return this.getToken(user);
   }
 

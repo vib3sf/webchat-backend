@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from './entity/users.entity';
-import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -12,8 +12,7 @@ export class UsersService {
     try {
       const user = new this.userModel(createUserDto);
       return await user.save();
-    }
-    catch(error) {
+    } catch (error) {
       throw new UnauthorizedException();
     }
   }
